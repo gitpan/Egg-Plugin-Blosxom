@@ -1,0 +1,19 @@
+Build.PL
+Changes
+eg/ExampleProject/lib/ExampleProject.pm
+eg/ExampleProject/lib/ExampleProject/Blosxom/Blog.pm
+eg/ExampleProject/lib/ExampleProject/config.pm
+eg/ExampleProject/lib/ExampleProject/D.pm
+eg/SETUP
+lib/Egg/App/Blosxom.pm
+lib/Egg/Helper/P/Blosxom.pm
+lib/Egg/Plugin/Blosxom.pm
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+t/00_use.t
+t/01_blosxom.t
+t/89_pod.t
+t/98_perlcritic.t
+t/99_pod_coverage.t

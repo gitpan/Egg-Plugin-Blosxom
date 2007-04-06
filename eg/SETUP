@@ -1,0 +1,123 @@
+Egg::Plugin::Blosxom.  Setup guide.
+=================================================
+
+--------------------------------------------------
+ 1. I form project.
+
+  perl egg_helper.pl Project:MYPROJECT
+
+--------------------------------------------------
+ 2. I form a Blosxom base module using a project helper.
+
+ cd /path/to/MYPROJECT/bin
+ 
+ perl myproject_helper.pl P:Blosxom Blog
+
+--------------------------------------------------
+ 3. Editing of a controller.
+
+* /path/to/MYPROJECT/lib/MYPROJECT.pm
+
+  package MYPROJECT;
+  use strict;
+  use Egg qw/ Blosxom /;
+  
+  .....
+
+--------------------------------------------------
+ 4. Editing of a dispatch.
+
+* /path/to/MYPROJECT/lib/MYPROJECT/D.pm
+
+  __PACKAGE__->run_modes(
+    ..
+    ...
+    blog => \&blosxom_blog,
+    );
+  
+  sub blosxom_blog {
+    my($self, $e)= @_;
+    $e->blosxom('blog')->execute;
+  }
+
+--------------------------------------------------
+ 5. Acquisition of ModBlosxom and a plugin module.
+
+* Get it from following distribution sites.
+
+http://www.donzoko.net/cgi-bin/blosxom/blosxom.cgi
+
+* To get without forgetting and put a plugin module.
+
+http://www.donzoko.net/cgi-bin/blosxom/ModBlosxom/plugin/
+
+* Place a module that got it to library DIR of project.
+
+ /path/to/MYPROJECT/lib/ModBlosxom.pm
+                       /ModBlosxom/plugin/Archives.pm
+                       /ModBlosxom/plugin/Categories.pm
+                       /ModBlosxom/plugin/WikiEditish.pm
+                       .....
+                       ..
+
+--------------------------------------------------
+ 6. Acquisition of a flavour.
+
+* Download from a distribution site of 'blosxom starter kit'.
+
+http://hail2u.net/archives/bsk.html
+
+* Develop a down load file and change a name 'bsk**' dir and copy.
+
+  cp bsk** /path/to/MYPROJECT/htdocs
+  mv bsk** blog
+
+* Delete a needless file.
+
+  cd /path/to/MYPROJECT/htdocs/blog
+  rm *.cgi *.txt
+  find ./plugins -type f -exec rm {} \;
+
+--------------------------------------------------
+ 7. Establishment of entry permission.
+
+  chmod 777 /path/to/MYPROJECT/htdocs/blog/entries
+  chmod 777 /path/to/MYPROJECT/htdocs/blog/plugins/states
+
+* Sometimes need to make beforehand and put a file that the other plugin demands.
+
+--------------------------------------------------
+ 8. Establishment of a Web server ( lighttpd + FastCGI )
+
+* To complete and put setup of FastCGI.
+
+  $HTTP["host"] == "myproject.domain.name" {
+  
+    server.document-root = "/path/to/MYPROJECT/htdocs"
+  
+    url.rewrite-once = (
+      "^/(blog/.+?\.)(css|js|icon|gif|jpe?g)"  => "/$1$2",
+      "^/(blog/entries/.*\.html)(\#.*)?"       => "/$1$2",
+      "^/(blog/.*)"              => "/dispatch.fcgi/$1",
+      "^/([^\.]+)?([\?\#].*)?$"  => "/dispatch.fcgi/$1$2$3",
+      )
+  
+    fastcgi.server = ( "/dispatch.fcgi" => ((
+      "socket"   => "/path/to/MYPROJECT/tmp/fcgi.socket",
+      "bin-path" => "/path/to/MYPROJECT/htdocs/dispatch.fcgi",
+      )))
+  
+    }
+
+* The test in place mod_perl today is not completed.
+
+--------------------------------------------------
+ 9. Confirmation and correction of configuration.
+
+ /path/to/MYPROJECT/lib/MYPROJECT/config.pm
+
+--------------------------------------------------
+10. Reactivation of WEB server.
+
+* It is completion if it confirms it by a browser after it reactivates.
+
